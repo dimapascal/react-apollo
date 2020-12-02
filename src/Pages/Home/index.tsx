@@ -14,6 +14,7 @@ function HomePage(props: RouteChildrenProps) {
                     {props.location.pathname}
                 </Text>
             </Text>
+            <br />
             <Box as="pre">{JSON.stringify(data, null, 2)}</Box>
         </DefaultLayout>
     );
