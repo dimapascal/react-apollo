@@ -1,3 +1,7 @@
 mutation Login($options: LoginInput!) {
-    login(options: $options)
+    login(options: $options) {
+        token
+        refreshToken
+        expiresIn
+    }
 }

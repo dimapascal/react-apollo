@@ -19,7 +19,22 @@ export type UserEntity = {
   email: Scalars['String'];
   name: Scalars['String'];
   age: Scalars['Float'];
-  password: Scalars['String'];
+  role: RoleEntity;
+  roleId: Scalars['Float'];
+};
+
+export type RoleEntity = {
+  __typename?: 'RoleEntity';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  users: Array<UserEntity>;
+};
+
+export type JwtResponseObject = {
+  __typename?: 'JWTResponseObject';
+  token: Scalars['String'];
+  refreshToken: Scalars['String'];
+  expiresIn: Scalars['Float'];
 };
 
 export type LoginInput = {
@@ -44,8 +59,9 @@ export type Query = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  register: UserEntity;
-  login: Scalars['Boolean'];
+  register: Scalars['Boolean'];
+  login?: Maybe<JwtResponseObject>;
+  refreshToken?: Maybe<JwtResponseObject>;
 };
 
 
@@ -58,15 +74,22 @@ export type MutationLoginArgs = {
   options: LoginInput;
 };
 
+
+export type MutationRefreshTokenArgs = {
+  token: Scalars['String'];
+};
+
 export type LoginMutationVariables = Exact<{
-  email: Scalars['String'];
-  password: Scalars['String'];
+  options: LoginInput;
 }>;
 
 
 export type LoginMutation = (
   { __typename?: 'Mutation' }
-  & Pick<Mutation, 'login'>
+  & { login?: Maybe<(
+    { __typename?: 'JWTResponseObject' }
+    & Pick<JwtResponseObject, 'token' | 'refreshToken' | 'expiresIn'>
+  )> }
 );
 
 export type HelloQueryVariables = Exact<{ [key: string]: never; }>;
@@ -79,8 +102,12 @@ export type HelloQuery = (
 
 
 export const LoginDocument = gql`
-    mutation Login($email: String!, $password: String!) {
-  login(options: {email: $email, password: $password})
+    mutation Login($options: LoginInput!) {
+  login(options: $options) {
+    token
+    refreshToken
+    expiresIn
+  }
 }
     `;
 export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
@@ -98,8 +125,7 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  * @example
  * const [loginMutation, { data, loading, error }] = useLoginMutation({
  *   variables: {
- *      email: // value for 'email'
- *      password: // value for 'password'
+ *      options: // value for 'options'
  *   },
  * });
  */

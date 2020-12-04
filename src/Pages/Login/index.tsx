@@ -14,12 +14,16 @@ import {
 import { DefaultLayout } from '../../Layouts/DefaultLayout';
 import { useLoginMutation } from '../../graphql/generators';
 import { useHistory } from 'react-router-dom';
+import JWTAuthService from '../../Services/JWTAuthService';
 
 const LoginPage: React.FC = () => {
     const history = useHistory();
 
     const onFinishRequest = function (data: any) {
-        history.push('/');
+        if (data?.login) {
+            JWTAuthService.setAuth(data.login);
+            history.push('/');
+        }
     };
 
     const [login, { data, loading }] = useLoginMutation({ onCompleted: onFinishRequest });
@@ -29,7 +33,7 @@ const LoginPage: React.FC = () => {
             email: '',
             password: ''
         },
-        onSubmit: (values) => login({ variables: values }),
+        onSubmit: (options) => login({ variables: { options } }),
         validate: (values) => {
             const { email, password } = values;
             const errors: { email?: string; password?: string } = {};

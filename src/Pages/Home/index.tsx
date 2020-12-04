@@ -4,7 +4,8 @@ import { RouteChildrenProps } from 'react-router-dom';
 import { DefaultLayout } from '../../Layouts/DefaultLayout';
 
 function HomePage(props: RouteChildrenProps) {
-    const { data }: HelloQueryHookResult = useHelloQuery();
+    const resp: HelloQueryHookResult = useHelloQuery();
+    console.log(resp);
 
     return (
         <DefaultLayout>
@@ -15,7 +16,7 @@ function HomePage(props: RouteChildrenProps) {
                 </Text>
             </Text>
             <br />
-            <Box as="pre">{JSON.stringify(data, null, 2)}</Box>
+            <Box as="pre">{JSON.stringify(resp.data, null, 2)}</Box>
         </DefaultLayout>
     );
 }
