@@ -3,6 +3,7 @@ import { createBrowserHistory } from 'history';
 
 import HomePage from '../Pages/Home';
 import LoginPage from '../Pages/Login';
+import MePage from '../Pages/Me';
 
 const history = createBrowserHistory();
 
@@ -12,6 +13,7 @@ export const DefaultRouter = () => (
             <Route path="/" exact component={HomePage} />
             <Route path="/login" component={LoginPage} />
             <Route path="/register" component={LoginPage} />
+            <Route path="/user" exact component={MePage} />
         </Switch>
     </Router>
 );
