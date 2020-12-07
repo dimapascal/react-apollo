@@ -31,6 +31,10 @@ class JWTAuthServiceClass {
         return null;
     }
 
+    public deleteAuth() {
+        this.clearPersistentAuth();
+    }
+
     public async refreshTokens(): Promise<JWTAuth | null> {
         const auth = this.getAuthPersistent();
         if (auth) {

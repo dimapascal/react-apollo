@@ -26,7 +26,7 @@ const LoginPage: React.FC = () => {
         }
     };
 
-    const [login, { data, loading }] = useLoginMutation({ onCompleted: onFinishRequest });
+    const [login, { data, loading, error }] = useLoginMutation({ onCompleted: onFinishRequest });
 
     const formik = useFormik({
         initialValues: {
@@ -50,10 +50,13 @@ const LoginPage: React.FC = () => {
             <Container>
                 <form onSubmit={formik.handleSubmit}>
                     <Box height="50px">
-                        {data && !data.login && (
+                        {((data && !data.login) || error) && (
                             <Alert status="error">
                                 <AlertIcon />
-                                User with that credentials do not exist
+                                {data && !data.login && !error
+                                    ? 'User with that credentials do not exist'
+                                    : ''}
+                                {error ? error.message : ''}
                             </Alert>
                         )}
                     </Box>
@@ -61,6 +64,7 @@ const LoginPage: React.FC = () => {
                     <FormControl isInvalid={!!formik.errors.email} id="email" mt="5">
                         <FormLabel>Email address</FormLabel>
                         <Input
+                            isInvalid={!data ? false : !data.login}
                             required
                             type="email"
                             onChange={formik.handleChange}
@@ -71,6 +75,7 @@ const LoginPage: React.FC = () => {
                     <FormControl isInvalid={!!formik.errors.password} id="password" mt="5">
                         <FormLabel>Password</FormLabel>
                         <Input
+                            isInvalid={!data ? false : !data.login}
                             required
                             type="password"
                             onChange={formik.handleChange}
@@ -78,7 +83,13 @@ const LoginPage: React.FC = () => {
                         />
                         <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
                     </FormControl>
-                    <Button isLoading={loading} type="submit" mt="5" w="100%" colorScheme="teal">
+                    <Button
+                        isLoading={loading}
+                        disabled={loading}
+                        type="submit"
+                        mt="5"
+                        w="100%"
+                        colorScheme="teal">
                         Submit
                     </Button>
                 </form>
